@@ -35,6 +35,10 @@
             background-color: rgb(38, 36, 36);
             color: white;
         }
+
+        .task-title {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -92,21 +96,34 @@
             wrapper.innerHTML = ''
             const url = 'http://localhost:8000/api/task-list/'
 
+
+
             fetch(url)
                 .then((response) => response.json())
                 .then(function (data) {
                     console.log('data', data)
                     const tasks = data
                     for (const i in tasks) {
+                        let title = `<h4 class="m-0 task-title">
+                                                    <i class="fa fa-circle" style="font-size:24px;"></i>
+                                                    ${tasks[i].title}
+                                    </h4>`
+
+                        if (tasks[i].completed == true) {
+                            title = `
+                            <h4 class="m-0 task-title"> 
+                            <i class="fa fa-circle text-success" style="font-size:24px;"></i>
+                            <del class="text-success"><i>${tasks[i].title}</i></del>
+                            </h4>
+                            `
+                        }
+
                         const item = `
                         <div id="data-row-${i}">
                                 <a class="w-100 text-decoration-none text-white">
                                     <div class="d-flex border-top rounded m-3 p-2 justify-content-between align-items-center task-item  ">
                                         <div class="">
-                                                <h4 class="m-0">
-                                                    <i class="fa fa-circle" style="font-size:24px;"></i>
-                                                    ${tasks[i].title}
-                                                </h4>
+                                                ${title}
                                         </div>
                                         <div class="d-flex  justify-content-between align-items-center">
                                             <button class="btn btn-dark m-0 task-edit"><i class="fa fa-edit " style="font-size:36px;color:green"></i></button>
@@ -126,12 +143,16 @@
                     for (const i in tasks) {
                         var editBtn = document.getElementsByClassName('task-edit')[i]
                         var deleteBtn = document.getElementsByClassName('task-delete')[i]
+                        var strikeBtn = document.getElementsByClassName('task-title')[i]
 
                         editBtn.addEventListener('click', function () {
                             editItem(tasks[i])
                         })
                         deleteBtn.addEventListener('click', function () {
                             deleteItem(tasks[i])
+                        })
+                        strikeBtn.addEventListener('click', function () {
+                            strikeUnstrike(tasks[i])
                         })
                     }
                 })
@@ -175,18 +196,35 @@
             document.getElementById('title').value = activeItem.title
         }
 
-        function deleteItem(item){
+        function deleteItem(item) {
             console.log('delete click', item)
             fetch(`http://localhost:8000/api/task-delete/${item.id}`, {
-                method:'DELETE',
+                method: 'DELETE',
                 headers: {
                     'Content-type': 'application/json',
                     'X-CSRFToken': csrftoken
                 }
-            }).then((response)=>{
+            }).then((response) => {
                 buildList()
             })
 
+        }
+
+        function strikeUnstrike(item) {
+            console.log('striked')
+            item.completed = !item.completed
+            fetch(`http://localhost:8000/api/task-update/${item.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    'title': item.title, 'completed': item.completed
+                })
+            }).then((response) => {
+                buildList()
+            })
         }
 
     </script>
