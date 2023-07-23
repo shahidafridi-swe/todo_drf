@@ -120,12 +120,12 @@
 
                         wrapper.innerHTML += item
 
-                        
+
                     }
 
                     for (const i in tasks) {
                         var editBtn = document.getElementsByClassName('task-edit')[i]
-                        editBtn.addEventListener('click', function(){
+                        editBtn.addEventListener('click', function () {
                             editItem(tasks[i])
                         })
                     }
@@ -139,7 +139,7 @@
             e.preventDefault()
             console.log('Form submitted')
             const url = 'http://localhost:8000/api/task-create/'
-            if(activeItem != null){
+            if (activeItem != null) {
                 const url = `http://localhost:8000/api/task-update/${activeItem.id}`
                 activeItem = null
             }
@@ -152,7 +152,7 @@
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json',
-                    'X-CSRFToken':csrftoken
+                    'X-CSRFToken': csrftoken
                 },
                 body: JSON.stringify({ 'title': title })
             }
@@ -163,12 +163,14 @@
 
 
         })
-    
+
         function editItem(item) {
             console.log('item clicked:', item)
             activeItem = item
             document.getElementById('title').value = activeItem.title
         }
+
+
 
     </script>
 
