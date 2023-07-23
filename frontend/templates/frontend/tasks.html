@@ -1,0 +1,25 @@
+{% extends "frontend/main.html" %}
+
+{% block content %}
+
+<div class="card-header ">
+    <div>
+        <h1 >Hello <span class="text-uppercase">{{request.user}}...</span>  </h1>
+        <div id="task-form">
+            <form id="form" class="w-50" method="get">
+                <div class="input-group mb-3">   
+                    <input id="title" type="text" class="form-control" placeholder="Add A Task" >
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Submit</button>
+                 </div>
+            </form>
+        </div>
+    </div>
+   
+    
+</div>
+<div id="task-list">
+        
+</div>
+
+
+{% endblock content %}
