@@ -125,8 +125,13 @@
 
                     for (const i in tasks) {
                         var editBtn = document.getElementsByClassName('task-edit')[i]
+                        var deleteBtn = document.getElementsByClassName('task-delete')[i]
+
                         editBtn.addEventListener('click', function () {
                             editItem(tasks[i])
+                        })
+                        deleteBtn.addEventListener('click', function () {
+                            deleteItem(tasks[i])
                         })
                     }
                 })
@@ -138,9 +143,9 @@
         form.addEventListener('submit', function (e) {
             e.preventDefault()
             console.log('Form submitted')
-            const url = 'http://localhost:8000/api/task-create/'
+            let url = 'http://localhost:8000/api/task-create/'
             if (activeItem != null) {
-                const url = `http://localhost:8000/api/task-update/${activeItem.id}`
+                url = `http://localhost:8000/api/task-update/${activeItem.id}`
                 activeItem = null
             }
 
@@ -170,7 +175,19 @@
             document.getElementById('title').value = activeItem.title
         }
 
+        function deleteItem(item){
+            console.log('delete click', item)
+            fetch(`http://localhost:8000/api/task-delete/${item.id}`, {
+                method:'DELETE',
+                headers: {
+                    'Content-type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                }
+            }).then((response)=>{
+                buildList()
+            })
 
+        }
 
     </script>
 
